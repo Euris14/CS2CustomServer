@@ -1,5 +1,5 @@
-"""Controls cs2 server"""
 #! /usr/bin/python3
+"""Controls cs2 server"""
 import os
 import sys
 import getopt
