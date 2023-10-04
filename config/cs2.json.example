@@ -1,0 +1,22 @@
+{
+    "steamcmd" :
+    {
+        "auth" :
+        {
+            "user" : "steamuser",
+            "pass" : "steampass"
+        },
+        "options" :
+        {
+            "login" : true,
+            "appID" : 730,
+            "installDir" : "/home/CHANGEME/serverfiles/"
+        }
+    },
+    "cs2" :
+    {
+        "steamtoken" : "STEAMTOKENHERE",
+        "gameserverpath" : "/home/CHANGEME/serverfiles/game/bin/linuxsteamrt64/cs2"
+        
+    }
+}
