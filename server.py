@@ -3,16 +3,21 @@
 import os
 import sys
 import getopt
+#import subprocess
 from steamcmd import steamcmd
 
-CONFIG_PATH = r"config/cs2.json"
-config = steamcmd.load_config(CONFIG_PATH)
 
-serverdir = config['steamcmd']['options']['installDir']
+CONFIG_PATH = r"config/cs2.json"
+CONFIG = steamcmd.load_config(CONFIG_PATH)
+
+SERVERDIR= CONFIG['steamcmd']['options']['installDir']
+
+SERVER = CONFIG['server']
 
 def main(argv): # Runs user inputs and deploys functions
-    """ This is the main function, which runs all functions and collects
-    user input."""
+    """ This is the main function, which runs all functions and collects """
+    """ user input. """
+    """ Arg: argv | user input from ./server -c"""
     choice = ''
     opts, args = getopt.getopt(argv, "hc:",["choice="])
     for opt, arg in opts: # gets command and argument.
@@ -64,15 +69,16 @@ def main(argv): # Runs user inputs and deploys functions
             sys.exit(5)
 def server_exist(): # Check if server is already installed.
     """ This function checks the serverdir for an existing server. """
-    file_exist = os.path.exists(serverdir)
+    file_exist = os.path.exists(SERVERDIR)
     if file_exist:
-        print(f"Server is already installed. In order to update the server, " +
+        print("Server is already installed. In order to update the server, " +
               "type this command: ./server.py -c update")
         sys.exit(2)
     else:
         return True
 def install_server(): # Install game server only if dir /serverfiles/ does not exist.
-    """ This function installs the server to the server path in the config file."""
+    """ This function installs the server to the server
+        path listed in the config file."""
     if server_exist():
         steamcmd.update(CONFIG_PATH)
 def update_server():# Updates the game server!
@@ -86,8 +92,9 @@ def validate_server():
     steamcmd.validate(CONFIG_PATH)
 def start_server():
     """ This function starts the server in this case its cs2. """
-    os.system(rf"{serverdir} -dedicated -usercon +map +game_type 0 +game_mode 1 "+
-                f"+map de_dust2 +sv_setsteamaccount {config['cs2']['steamtoken']} "+
-                "+clientport 27015")
+    os.system(f"{SERVERDIR} -dedicated -usercon +map +game_type " +
+                  f"{SERVER['gametype']} +game_mode {SERVER['gamemode']} " +
+                  f"+map {SERVER['map']} +sv_setsteamaccount {SERVER['steamtoken']} "+
+                  f"+clientport {SERVER['port']}")
 if __name__ == "__main__":
     main(sys.argv[1:])

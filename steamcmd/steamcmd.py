@@ -17,16 +17,20 @@ DEFAULT_CONFIG = {
             "installDir" : "/home/cs2/serverfiles/"
         }
     },
-    "cs2" :
+    "server" :
     {
         "steamtoken" : "STEAMTOKENHERE",
-        "gameserverpath" : "/home/cs2/serverfiles/game/bin/linuxsteamrt64/cs2"
+        "gameserverpath" : "/home/cs2/serverfiles/game/bin/linuxsteamrt64/cs2",
+        "port" : 27015,
+        "gametype" : 0,
+        "gamemode" : 0,
+        "map" : "de_dust2"
     }
 }
 
 def load_config(cpath): # Looks for config file, if not found then create a default one.
-    """ Looks for the default config file, if one can not be found
-    then it creates a new one. """
+    """ Load the default config file, if one can not be found then create one. """
+    """ Arg: cpath | cs2.json config path"""
     try:
         with open(cpath) as config:
             return json.load(config)
@@ -35,11 +39,14 @@ def load_config(cpath): # Looks for config file, if not found then create a defa
         save_config(DEFAULT_CONFIG, cpath)
         return DEFAULT_CONFIG
 def save_config(def_config, cpath):
-    """ This function saves the new default config to the default config dir """
+    """ This function saves the new default config to the default config dir. """
+    """ Arg: def_config | def_config is the default config"""
+    """ Arg: cpath | cs2.json config path"""
     with open(cpath, 'w') as config_file:
         json.dump(def_config, config_file, indent=4)
 def update(cpath): # Update CS:2 Server with steamcmd.
     """ Updates or installs server using steamcmd. """
+    """ Args: cpath | cs2.json config path"""
     config = load_config(cpath)
     steamcmd = config['steamcmd']
     options = steamcmd['options']
@@ -54,7 +61,8 @@ def update(cpath): # Update CS:2 Server with steamcmd.
         except:
             print("Game server probably needs a login, change cs2.json.")
 def validate(cpath): #Validates the cs2 server.
-    """ **** Validates serverdir against steam default files and replaces them (I think?)"""
+    """ **** Validates serverdir against steam default files and replaces them. (I think?)"""
+    """ Args: cpath | cs2.json config path"""
     config = load_config(cpath)
     steamcmd = config['steamcmd']
     options = steamcmd['options']
