@@ -75,8 +75,7 @@ def server_exist(): # Check if server is already installed.
         print("Server is already installed. In order to update the server, " +
               "type this command: ./server.py -c update")
         return True
-    else:
-        return False
+    return False
 def install_server(): # Install game server only if dir /serverfiles/ does not exist.
     """ This function installs the server to the server
         path listed in the config file."""
