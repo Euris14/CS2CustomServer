@@ -68,19 +68,23 @@ def main(argv): # Runs user inputs and deploys functions
             for i in range(len(functions)):
                 print(f"{i + 1}. ./server.py -c {functions[i]}")
             sys.exit(5)
-def server_exist(): # Check if server is already installed.
+def file_exist(serverdir): # Check if server is already installed.
     """ This function checks the serverdir for an existing server. """
-    file_exist = os.path.exists(SERVERDIR)
+    file_exist = os.path.exists(serverdir)
     if file_exist:
-        print("Server is already installed. In order to update the server, " +
-              "type this command: ./server.py -c update")
         return True
     return False
 def install_server(): # Install game server only if dir /serverfiles/ does not exist.
     """ This function installs the server to the server
         path listed in the config file."""
-    if not server_exist():
+    if not file_exist(SERVERDIR):
         steamcmd.update(CONFIG_PATH)
+    else:
+        print("Server is already installed. In order to update the server, " +
+              "type this command: ./server.py -c update")
+        sys.exit(2)
+        
+    
 def update_server():# Updates the game server!
     """ This function updates the server. """
     print("Updating...")
@@ -92,9 +96,18 @@ def validate_server():
     steamcmd.validate(CONFIG_PATH)
 def start_server():
     """ This function starts the server in this case its cs2. """
-    os.system(f"{LAUNCHSERVER} -dedicated -usercon +map +game_type " +
-                  f"{SERVER['gametype']} +game_mode {SERVER['gamemode']} " +
-                  f"+map {SERVER['map']} +sv_setsteamaccount {SERVER['steamtoken']} "+
-                  f"+clientport {SERVER['port']}")
+    if file_exist(fr'{USR_DIR}/serverfiles/game/csgo/cfg/server.cfg'):
+        os.system(f"{LAUNCHSERVER} -dedicated -insecure -usercon +map +game_type " +
+                    f"{SERVER['gametype']} +game_mode {SERVER['gamemode']} " +
+                    f"+map {SERVER['map']} +sv_setsteamaccount {SERVER['steamtoken']} "+
+                    f"+clientport {SERVER['port']}")
+    else:
+        print("Making default server.cfg!")
+        try:
+            os.system(f"cp {USR_DIR}/CS2CustomServer/config/default/server.cfg {USR_DIR}/serverfiles/game/csgo/cfg/")
+        except Exception as a:
+            return a
+        print("Done. \nPlease re-run the command.")
+        
 if __name__ == "__main__":
     main(sys.argv[1:])
