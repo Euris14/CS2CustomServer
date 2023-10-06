@@ -14,13 +14,13 @@ DEFAULT_CONFIG = {
         {
             "login" : True,
             "appID" : 730,
-            "installDir" : "/home/cs2/serverfiles/"
+            "installDir" : "~/serverfiles/"
         }
     },
     "server" :
     {
         "steamtoken" : "STEAMTOKENHERE",
-        "gameserverpath" : "/home/cs2/serverfiles/game/bin/linuxsteamrt64/cs2",
+        "gameserverpath" : "~/serverfiles/game/bin/linuxsteamrt64/cs2",
         "port" : 27015,
         "gametype" : 0,
         "gamemode" : 0,
@@ -42,6 +42,7 @@ def save_config(def_config, cpath):
     """ This function saves the new default config to the default config dir. """
     """ Arg: def_config | def_config is the default config"""
     """ Arg: cpath | cs2.json config path"""
+    os.system("mkdir config")
     with open(cpath, 'w') as config_file:
         json.dump(def_config, config_file, indent=4)
 def update(cpath): # Update CS:2 Server with steamcmd.
@@ -66,6 +67,7 @@ def validate(cpath): #Validates the cs2 server.
     config = load_config(cpath)
     steamcmd = config['steamcmd']
     options = steamcmd['options']
+    
     if options['login']:
         os.system(f"steamcmd +force_install_dir {options['installDir']} " +
                   f"+login {steamcmd['auth']['user']} {steamcmd['auth']['pass']} " +
