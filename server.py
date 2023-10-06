@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/bin/python3.10
 """Controls cs2 server"""
 import os
 import sys
@@ -6,13 +6,14 @@ import getopt
 #import subprocess
 from steamcmd import steamcmd
 
-
+USR_DIR = os.path.expanduser('~')
 CONFIG_PATH = r"config/cs2.json"
 CONFIG = steamcmd.load_config(CONFIG_PATH)
 
-SERVERDIR= CONFIG['steamcmd']['options']['installDir']
-
+serverdir = CONFIG['steamcmd']['options']['installDir']
+SERVERDIR = serverdir.replace("~", USR_DIR)
 SERVER = CONFIG['server']
+LAUNCHSERVER = SERVER['gameserverpath'].replace("~", USR_DIR)
 
 def main(argv): # Runs user inputs and deploys functions
     """ This is the main function, which runs all functions and collects """
@@ -73,13 +74,13 @@ def server_exist(): # Check if server is already installed.
     if file_exist:
         print("Server is already installed. In order to update the server, " +
               "type this command: ./server.py -c update")
-        sys.exit(2)
-    else:
         return True
+    else:
+        return False
 def install_server(): # Install game server only if dir /serverfiles/ does not exist.
     """ This function installs the server to the server
         path listed in the config file."""
-    if server_exist():
+    if not server_exist():
         steamcmd.update(CONFIG_PATH)
 def update_server():# Updates the game server!
     """ This function updates the server. """
@@ -92,7 +93,7 @@ def validate_server():
     steamcmd.validate(CONFIG_PATH)
 def start_server():
     """ This function starts the server in this case its cs2. """
-    os.system(f"{SERVERDIR} -dedicated -usercon +map +game_type " +
+    os.system(f"{LAUNCHSERVER} -dedicated -usercon +map +game_type " +
                   f"{SERVER['gametype']} +game_mode {SERVER['gamemode']} " +
                   f"+map {SERVER['map']} +sv_setsteamaccount {SERVER['steamtoken']} "+
                   f"+clientport {SERVER['port']}")
